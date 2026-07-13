@@ -22,7 +22,7 @@ export default function TermsPage() {
           <h2 className="font-heading text-xl font-bold text-[var(--color-navy)]">Orders</h2>
           <p>We reserve the right to refuse or cancel any order you place with us. We may limit the quantities purchased per person, per household, or per order.</p>
           <h2 className="font-heading text-xl font-bold text-[var(--color-navy)]">Contact</h2>
-          <p>For questions about these Terms & Conditions, contact us at thauya9@gmail.com.</p>
+          <p>For questions about these Terms & Conditions, contact us at rakhiglam200@gmail.com.</p>
         </div>
       </div>
       <Footer />

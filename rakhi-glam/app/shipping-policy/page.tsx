@@ -28,7 +28,7 @@ export default function ShippingPolicyPage() {
           <h2 className="font-heading text-xl font-bold text-[var(--color-navy)]">Order Tracking</h2>
           <p>You will receive a tracking number via email/WhatsApp once your order is shipped.</p>
           <h2 className="font-heading text-xl font-bold text-[var(--color-navy)]">Contact Us</h2>
-          <p>For shipping inquiries, WhatsApp us at +91 7736272601 or email thauya9@gmail.com.</p>
+          <p>For shipping inquiries, WhatsApp us at +91 7906759725 or email rakhiglam200@gmail.com.</p>
         </div>
       </div>
       <Footer />

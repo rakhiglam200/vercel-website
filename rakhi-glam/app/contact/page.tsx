@@ -41,7 +41,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-heading text-base font-semibold text-[var(--color-navy)]">Address</h3>
-                  <p className="text-sm text-[var(--color-text-light)]">2nd Floor, Beach Complex Building, Near Calicut Beach Post Office, Slik Street, Calicut Beach, Kerala - 673032</p>
+                  <p className="text-sm text-[var(--color-text-light)]">14, Bengali Library Road, Dehradun, Uttarakhand - 248001</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
@@ -50,7 +50,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-heading text-base font-semibold text-[var(--color-navy)]">Email</h3>
-                  <p className="text-sm text-[var(--color-text-light)]">thauya9@gmail.com</p>
+                  <p className="text-sm text-[var(--color-text-light)]">rakhiglam200@gmail.com</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
@@ -59,7 +59,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-heading text-base font-semibold text-[var(--color-navy)]">Phone</h3>
-                  <p className="text-sm text-[var(--color-text-light)]">+91 7736272601</p>
+                  <p className="text-sm text-[var(--color-text-light)]">+91 7906759725</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
@@ -68,7 +68,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-heading text-base font-semibold text-[var(--color-navy)]">WhatsApp</h3>
-                  <a href="https://wa.me/917736272601" target="_blank" rel="noopener noreferrer" className="text-sm text-[var(--color-text-light)] hover:text-[var(--color-navy)]">+91 7736272601</a>
+                  <a href="https://wa.me/917906759725" target="_blank" rel="noopener noreferrer" className="text-sm text-[var(--color-text-light)] hover:text-[var(--color-navy)]">+91 7906759725</a>
                 </div>
               </div>
             </div>

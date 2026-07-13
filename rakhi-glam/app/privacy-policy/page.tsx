@@ -22,7 +22,7 @@ export default function PrivacyPolicyPage() {
           <h2 className="font-heading text-xl font-bold text-[var(--color-navy)]">Data Security</h2>
           <p>We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.</p>
           <h2 className="font-heading text-xl font-bold text-[var(--color-navy)]">Contact Us</h2>
-          <p>For questions about this Privacy Policy, contact us at thauya9@gmail.com or WhatsApp us at +91 7736272601.</p>
+          <p>For questions about this Privacy Policy, contact us at rakhiglam200@gmail.com or WhatsApp us at +91 7906759725.</p>
         </div>
       </div>
       <Footer />

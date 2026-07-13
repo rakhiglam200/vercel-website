@@ -535,7 +535,7 @@ export default function Header() {
             <button onClick={() => { setDrawerOpen(false); setLoginOpen(true); }} className="no-underline text-xs text-[var(--color-text)] hover:text-[var(--color-navy)] cursor-pointer bg-transparent border-none">Account</button>
             <Link href="/about" className="no-underline text-xs text-[var(--color-text)] hover:text-[var(--color-navy)]" onClick={() => setDrawerOpen(false)}>About</Link>
             <Link href="/contact" className="no-underline text-xs text-[var(--color-text)] hover:text-[var(--color-navy)]" onClick={() => setDrawerOpen(false)}>Contact</Link>
-            <a href="https://wa.me/917736272601" target="_blank" rel="noopener noreferrer" className="text-[var(--color-text-light)] hover:text-[#25D366]" aria-label="WhatsApp">
+            <a href="https://wa.me/917906759725" target="_blank" rel="noopener noreferrer" className="text-[var(--color-text-light)] hover:text-[#25D366]" aria-label="WhatsApp">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
             </a>
           </div>

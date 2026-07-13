@@ -22,7 +22,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "Any questions?",
-    a: "You can contact us through our contact page or WhatsApp us at +91 7736272601. We will be happy to assist you!",
+    a: "You can contact us through our contact page or WhatsApp us at +91 7906759725. We will be happy to assist you!",
   },
 ];
 

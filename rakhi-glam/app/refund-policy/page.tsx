@@ -22,7 +22,7 @@ export default function RefundPolicyPage() {
           <h2 className="font-heading text-xl font-bold text-[var(--color-navy)]">Non-Returnable Items</h2>
           <p>Items that have been used, damaged by the customer, or are not in their original packaging are not eligible for returns.</p>
           <h2 className="font-heading text-xl font-bold text-[var(--color-navy)]">Contact Us</h2>
-          <p>For return and refund inquiries, WhatsApp us at +91 7736272601 or email thauya9@gmail.com.</p>
+          <p>For return and refund inquiries, WhatsApp us at +91 7906759725 or email rakhiglam200@gmail.com.</p>
         </div>
       </div>
       <Footer />
