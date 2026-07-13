@@ -223,6 +223,15 @@ export default function Header() {
 
           {/* Icons */}
           <div className="flex items-center gap-3 justify-self-end">
+            <Link
+              href="/account"
+              className="text-[var(--color-navy)] hover:text-[var(--color-gold)] transition-colors hidden md:block"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </Link>
             <button
               onClick={openSearch}
               aria-label="Search"
@@ -521,6 +530,7 @@ export default function Header() {
 
         <div className="shrink-0 border-t border-[var(--color-border)] bg-white px-4 py-3">
           <div className="flex items-center justify-between">
+            <Link href="/account" className="no-underline text-xs text-[var(--color-text)] hover:text-[var(--color-navy)]" onClick={() => setDrawerOpen(false)}>Account</Link>
             <Link href="/about" className="no-underline text-xs text-[var(--color-text)] hover:text-[var(--color-navy)]" onClick={() => setDrawerOpen(false)}>About</Link>
             <Link href="/contact" className="no-underline text-xs text-[var(--color-text)] hover:text-[var(--color-navy)]" onClick={() => setDrawerOpen(false)}>Contact</Link>
             <a href="https://wa.me/917736272601" target="_blank" rel="noopener noreferrer" className="text-[var(--color-text-light)] hover:text-[#25D366]" aria-label="WhatsApp">
