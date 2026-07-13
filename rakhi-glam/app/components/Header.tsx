@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/app/context/CartContext";
 import { searchProducts, type Product } from "@/data/products";
+import LoginPopup from "./LoginPopup";
 
 const navItems = [
   {
@@ -67,6 +68,7 @@ export default function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
   const { count, items, removeItem, updateQuantity, total } = useCart();
   const [openSubs, setOpenSubs] = useState<Record<number, boolean>>({});
   const [searchQuery, setSearchQuery] = useState("");
@@ -223,15 +225,15 @@ export default function Header() {
 
           {/* Icons */}
           <div className="flex items-center gap-3 justify-self-end">
-            <Link
-              href="/account"
-              className="text-[var(--color-navy)] hover:text-[var(--color-gold)] transition-colors hidden md:block"
+            <button
+              onClick={() => setLoginOpen(true)}
+              className="text-[var(--color-navy)] hover:text-[var(--color-gold)] transition-colors hidden md:block cursor-pointer bg-transparent border-none p-1"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
               </svg>
-            </Link>
+            </button>
             <button
               onClick={openSearch}
               aria-label="Search"
@@ -530,7 +532,7 @@ export default function Header() {
 
         <div className="shrink-0 border-t border-[var(--color-border)] bg-white px-4 py-3">
           <div className="flex items-center justify-between">
-            <Link href="/account" className="no-underline text-xs text-[var(--color-text)] hover:text-[var(--color-navy)]" onClick={() => setDrawerOpen(false)}>Account</Link>
+            <button onClick={() => { setDrawerOpen(false); setLoginOpen(true); }} className="no-underline text-xs text-[var(--color-text)] hover:text-[var(--color-navy)] cursor-pointer bg-transparent border-none">Account</button>
             <Link href="/about" className="no-underline text-xs text-[var(--color-text)] hover:text-[var(--color-navy)]" onClick={() => setDrawerOpen(false)}>About</Link>
             <Link href="/contact" className="no-underline text-xs text-[var(--color-text)] hover:text-[var(--color-navy)]" onClick={() => setDrawerOpen(false)}>Contact</Link>
             <a href="https://wa.me/917736272601" target="_blank" rel="noopener noreferrer" className="text-[var(--color-text-light)] hover:text-[#25D366]" aria-label="WhatsApp">
@@ -539,6 +541,8 @@ export default function Header() {
           </div>
         </div>
       </div>
+
+      <LoginPopup open={loginOpen} onClose={() => setLoginOpen(false)} />
     </>
   );
 }
