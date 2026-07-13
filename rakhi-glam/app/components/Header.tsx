@@ -226,15 +226,6 @@ export default function Header() {
           {/* Icons */}
           <div className="flex items-center gap-3 justify-self-end">
             <button
-              onClick={() => setLoginOpen(true)}
-              className="text-[var(--color-navy)] hover:text-[var(--color-gold)] transition-colors hidden md:block cursor-pointer bg-transparent border-none p-1"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-            </button>
-            <button
               onClick={openSearch}
               aria-label="Search"
               className="text-[var(--color-navy)] hover:text-[var(--color-gold)] transition-colors cursor-pointer bg-transparent border-none p-1"
@@ -252,6 +243,16 @@ export default function Header() {
                 <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
               </svg>
             </Link>
+            <button
+              onClick={() => setLoginOpen(true)}
+              aria-label="Account"
+              className="text-[var(--color-navy)] hover:text-[var(--color-gold)] transition-colors cursor-pointer bg-transparent border-none p-1"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </button>
             <button
               onClick={() => setCartOpen(true)}
               className="relative flex items-center justify-center w-9 h-9 rounded-full border border-[var(--color-border)] text-[var(--color-navy)] hover:border-[var(--color-gold)] hover:text-[var(--color-gold)] transition-all cursor-pointer bg-transparent"
