@@ -449,7 +449,7 @@ export default function Header() {
                     <span className="font-heading text-2xl font-bold text-[var(--color-navy)]">₹{total.toLocaleString("en-IN")}</span>
                   </div>
                   <button
-                    onClick={() => { setCartOpen(false); router.push("/collections"); }}
+                    onClick={() => { setCartOpen(false); router.push("/checkout"); }}
                     className="w-full bg-[var(--color-navy)] text-white py-3.5 rounded-full text-sm font-semibold hover:opacity-85 transition-opacity cursor-pointer border-none"
                   >
                     Proceed to Checkout
