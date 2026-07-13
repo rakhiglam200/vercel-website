@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-navy: #0D1A3C;
+  --color-navy-light: #1a2d5a;
+  --color-beige: #F6EFE5;
+  --color-beige-dark: #E8DDD0;
+  --color-cream: #FFFDFB;
+  --color-gold: #C9A96E;
+  --color-gold-dark: #B8944F;
+  --color-text: #333333;
+  --color-text-light: #666666;
+  --color-text-muted: #999999;
+  --color-border: rgba(0, 0, 0, 0.06);
+  --color-success: #006400;
+  --color-error: #8B0000;
+  --font-heading: 'Instrument Sans', sans-serif;
+  --font-body: 'Mulish', sans-serif;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-body);
+    color: var(--color-text);
+    background: #ffffff;
+  }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.announcement-track {
+  animation: marquee 20s linear infinite;
+}
+
+@keyframes slideDownFade {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes flyToCart {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(0.5) translateY(-100px); }
+  100% { opacity: 0; transform: scale(0.2) translateY(-200px) translateX(100px); }
+}
+
+.animate-slide-down {
+  animation: slideDownFade 0.2s ease;
+}
+
+.animate-slide-up {
+  animation: slideUpFade 0.3s ease;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
