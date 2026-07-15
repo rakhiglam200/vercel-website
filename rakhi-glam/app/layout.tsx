@@ -3,6 +3,7 @@ import { Mulish, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/app/context/CartContext";
 import { ToastProvider } from "@/app/context/ToastContext";
+import { AdminUIProvider } from "@/app/context/AdminUIContext";
 import WhatsAppButton from "@/app/components/WhatsAppButton";
 
 const mulish = Mulish({
@@ -38,12 +39,14 @@ export default function RootLayout({
     <html lang="en" className={`${mulish.variable} ${instrumentSans.variable}`}>
       <body className="min-h-full flex flex-col">
         <ToastProvider>
-          <CartProvider>
-            {children}
-            <div className="fixed bottom-6 right-6 z-50">
-              <WhatsAppButton />
-            </div>
-          </CartProvider>
+          <AdminUIProvider>
+            <CartProvider>
+              {children}
+              <div className="fixed bottom-6 right-6 z-50">
+                <WhatsAppButton />
+              </div>
+            </CartProvider>
+          </AdminUIProvider>
         </ToastProvider>
       </body>
     </html>

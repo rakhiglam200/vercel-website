@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/app/context/CartContext";
+import AdminImageControls from "./AdminImageControls";
 
 interface ProductCardProps {
   id: string;
@@ -35,6 +36,7 @@ export default function ProductCard({
       <div className="bg-white rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-all duration-400 hover:-translate-y-1.5 hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)]">
         <div className="relative aspect-square overflow-hidden bg-[var(--color-beige)]">
           <Image src={src} alt={alt} fill className="object-cover transition-transform duration-600 group-hover:scale-108" />
+          <AdminImageControls src={src} productId={id} />
           {badge && (
             <span className="absolute top-3 left-3 bg-[var(--color-navy)] text-white px-3 py-1 rounded-full text-[11px] font-semibold tracking-wider">
               {badge}

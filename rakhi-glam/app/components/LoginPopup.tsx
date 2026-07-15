@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import EditModeToggle from "./EditModeToggle";
 
 interface CustomerInfo {
   email: string;
@@ -115,10 +116,13 @@ export default function LoginPopup({ open, onClose }: LoginPopupProps) {
             <p className="text-xs text-[var(--color-text-muted)] mb-5">{customer.email}</p>
             <div className="space-y-2.5">
               {customer.isAdmin && (
-                <button onClick={() => { onClose(); window.location.href = "/admin"; }}
-                  className="w-full py-2.5 rounded-xl text-sm font-semibold bg-[var(--color-navy)] text-white hover:opacity-85 transition-opacity cursor-pointer border-none">
-                  Admin Dashboard
-                </button>
+                <>
+                  <button onClick={() => { onClose(); window.location.href = "/admin"; }}
+                    className="w-full py-2.5 rounded-xl text-sm font-semibold bg-[var(--color-navy)] text-white hover:opacity-85 transition-opacity cursor-pointer border-none">
+                    Admin Dashboard
+                  </button>
+                  <EditModeToggle />
+                </>
               )}
               <button onClick={() => { onClose(); window.location.href = "/account"; }}
                 className="w-full py-2.5 rounded-xl text-sm font-semibold border border-[var(--color-border)] text-[var(--color-navy)] hover:bg-[var(--color-beige)] transition-colors cursor-pointer bg-white">

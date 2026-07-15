@@ -6,16 +6,27 @@ import { useRouter } from "next/navigation";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import ProductCard from "@/app/components/ProductCard";
+import AdminImageControls from "@/app/components/AdminImageControls";
 import { useCart } from "@/app/context/CartContext";
+import { useAdminUI } from "@/app/context/AdminUIContext";
 import { getProductBySlug, products } from "@/data/products";
 
 export default function ProductPage() {
   const params = useParams();
   const router = useRouter();
   const { addItem } = useCart();
+  const { editMode } = useAdminUI();
   const product = getProductBySlug(params.handle as string);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [productImages, setProductImages] = useState<string[]>([]);
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [editingDesc, setEditingDesc] = useState(false);
+  const [editingPrice, setEditingPrice] = useState(false);
+  const [titleValue, setTitleValue] = useState("");
+  const [descValue, setDescValue] = useState("");
+  const [priceValue, setPriceValue] = useState("");
+  const images = productImages.length > 0 ? productImages : (product?.images ?? []);
 
   if (!product) {
     return (
@@ -63,19 +74,20 @@ export default function ProductPage() {
             <div className="relative aspect-square rounded-2xl overflow-hidden bg-[var(--color-beige)] mb-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={product.images[selectedImage]}
+                src={images[selectedImage]}
                 alt={product.alt}
                 className="w-full h-full object-cover"
               />
+              <AdminImageControls src={images[selectedImage]} productId={product.id} onUpdate={(url) => setProductImages((prev) => { const next = [...(prev.length ? prev : product.images)]; next[selectedImage] = url; return next; })} />
               {product.badge && (
                 <span className="absolute top-4 left-4 bg-[var(--color-navy)] text-white px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider">
                   {product.badge}
                 </span>
               )}
             </div>
-            {product.images.length > 1 && (
+            {images.length > 1 && (
               <div className="flex gap-3">
-                {product.images.map((img, i) => (
+                {images.map((img, i) => (
                   <button
                     key={i}
                     onClick={() => setSelectedImage(i)}
@@ -93,11 +105,60 @@ export default function ProductPage() {
 
           {/* Info */}
           <div className="flex flex-col">
-            <h1 className="font-heading text-3xl md:text-4xl font-bold text-[var(--color-navy)] mb-3">{product.title}</h1>
-            <p className="text-[var(--color-text-light)] text-base mb-6">{product.description}</p>
+            {editingTitle ? (
+              <div className="mb-3 flex gap-2">
+                <input autoFocus value={titleValue} onChange={(e) => setTitleValue(e.target.value)}
+                  className="flex-1 text-3xl md:text-4xl font-bold font-heading text-[var(--color-navy)] border-b-2 border-[var(--color-navy)] outline-none bg-transparent px-1" />
+                <button onClick={() => { setEditingTitle(false); }} className="text-xs bg-[var(--color-navy)] text-white px-3 py-1 rounded-lg cursor-pointer border-none">Save</button>
+                <button onClick={() => setEditingTitle(false)} className="text-xs text-[var(--color-text-muted)] px-2 py-1 cursor-pointer bg-transparent border-none">Cancel</button>
+              </div>
+            ) : (
+              <h1 className="font-heading text-3xl md:text-4xl font-bold text-[var(--color-navy)] mb-3">
+                {product.title}
+                {editMode && (
+                  <button onClick={() => { setTitleValue(product.title); setEditingTitle(true); }}
+                    className="ml-2 text-xs text-[var(--color-gold)] font-normal align-middle cursor-pointer bg-transparent border-none hover:underline">Edit</button>
+                )}
+              </h1>
+            )}
+
+            {editingDesc ? (
+              <div className="mb-6 flex gap-2">
+                <textarea autoFocus value={descValue} onChange={(e) => setDescValue(e.target.value)} rows={3}
+                  className="flex-1 text-[var(--color-text-light)] text-base border border-[var(--color-border)] rounded-lg outline-none bg-transparent px-2 py-1 resize-y focus:border-[var(--color-navy)]" />
+                <div className="flex flex-col gap-1">
+                  <button onClick={() => setEditingDesc(false)} className="text-xs bg-[var(--color-navy)] text-white px-3 py-1 rounded-lg cursor-pointer border-none">Save</button>
+                  <button onClick={() => setEditingDesc(false)} className="text-xs text-[var(--color-text-muted)] px-2 py-1 cursor-pointer bg-transparent border-none">Cancel</button>
+                </div>
+              </div>
+            ) : (
+              <p className="text-[var(--color-text-light)] text-base mb-6">
+                {product.description}
+                {editMode && (
+                  <button onClick={() => { setDescValue(product.description); setEditingDesc(true); }}
+                    className="ml-2 text-xs text-[var(--color-gold)] font-normal cursor-pointer bg-transparent border-none hover:underline">Edit</button>
+                )}
+              </p>
+            )}
 
             <div className="flex items-baseline gap-4 mb-6">
-              <span className="font-heading text-3xl font-bold text-[var(--color-navy)]">₹{product.price.toLocaleString("en-IN")}</span>
+              {editingPrice ? (
+                <div className="flex gap-2 items-center">
+                  <span className="text-lg">₹</span>
+                  <input autoFocus value={priceValue} onChange={(e) => setPriceValue(e.target.value)} type="number"
+                    className="w-28 text-3xl font-bold font-heading text-[var(--color-navy)] border-b-2 border-[var(--color-navy)] outline-none bg-transparent px-1" />
+                  <button onClick={() => setEditingPrice(false)} className="text-xs bg-[var(--color-navy)] text-white px-3 py-1 rounded-lg cursor-pointer border-none">Save</button>
+                  <button onClick={() => setEditingPrice(false)} className="text-xs text-[var(--color-text-muted)] px-2 py-1 cursor-pointer bg-transparent border-none">Cancel</button>
+                </div>
+              ) : (
+                <>
+                  <span className="font-heading text-3xl font-bold text-[var(--color-navy)]">₹{product.price.toLocaleString("en-IN")}</span>
+                  {editMode && (
+                    <button onClick={() => { setPriceValue(String(product.price)); setEditingPrice(true); }}
+                      className="text-xs text-[var(--color-gold)] cursor-pointer bg-transparent border-none hover:underline">Edit</button>
+                  )}
+                </>
+              )}
               {product.originalPrice && (
                 <del className="text-lg text-[var(--color-text-muted)]">₹{product.originalPrice.toLocaleString("en-IN")}</del>
               )}
@@ -147,7 +208,7 @@ export default function ProductPage() {
               <button
                 onClick={() => {
                   for (let i = 0; i < quantity; i++) {
-                    addItem({ id: product.id, title: product.title, price: product.price, src: product.images[0] });
+                    addItem({ id: product.id, title: product.title, price: product.price, src: images[0] });
                   }
                 }}
                 className="flex-1 bg-[var(--color-navy)] text-white py-4 rounded-full text-sm font-semibold hover:opacity-85 transition-opacity cursor-pointer border-none flex items-center justify-center gap-2"

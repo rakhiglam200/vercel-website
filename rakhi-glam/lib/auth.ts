@@ -62,9 +62,12 @@ export async function clearSessionCookie(): Promise<void> {
 
 export async function requireAdmin(): Promise<{ email: string }> {
   const session = await getSession();
-  if (!session) throw new Error("Not authenticated");
-  if (!isAdminEmail(session.email)) throw new Error("Not authorized");
-  return session;
+  if (session && isAdminEmail(session.email)) return session;
+
+  const customer = await getCustomerSession();
+  if (customer && isAdminEmail(customer.email)) return { email: customer.email };
+
+  throw new Error("Not authorized");
 }
 
 export async function hashPassword(password: string): Promise<string> {
