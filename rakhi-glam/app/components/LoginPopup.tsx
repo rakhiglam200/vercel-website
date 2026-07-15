@@ -6,6 +6,7 @@ interface CustomerInfo {
   email: string;
   name: string;
   picture?: string;
+  isAdmin?: boolean;
 }
 
 interface LoginPopupProps {
@@ -113,6 +114,12 @@ export default function LoginPopup({ open, onClose }: LoginPopupProps) {
             <h2 className="font-heading text-lg font-bold text-[var(--color-navy)] mb-0.5">{customer.name}</h2>
             <p className="text-xs text-[var(--color-text-muted)] mb-5">{customer.email}</p>
             <div className="space-y-2.5">
+              {customer.isAdmin && (
+                <button onClick={() => { onClose(); window.location.href = "/admin"; }}
+                  className="w-full py-2.5 rounded-xl text-sm font-semibold bg-[var(--color-navy)] text-white hover:opacity-85 transition-opacity cursor-pointer border-none">
+                  Admin Dashboard
+                </button>
+              )}
               <button onClick={() => { onClose(); window.location.href = "/account"; }}
                 className="w-full py-2.5 rounded-xl text-sm font-semibold border border-[var(--color-border)] text-[var(--color-navy)] hover:bg-[var(--color-beige)] transition-colors cursor-pointer bg-white">
                 My Account
