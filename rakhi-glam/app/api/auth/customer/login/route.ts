@@ -17,10 +17,10 @@ export async function POST(req: Request) {
 
     if (error) {
       if (isAdminEmail(email)) {
-        const adminClient = getSupabaseAdmin();
+        const adminClient: any = getSupabaseAdmin();
         const { data: admin } = await adminClient
           .from("admin_users")
-          .select("password_hash")
+          .select("password_hash, name")
           .eq("email", email)
           .single();
 
