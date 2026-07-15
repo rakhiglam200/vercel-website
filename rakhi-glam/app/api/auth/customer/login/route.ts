@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { isAdminEmail, setSessionCookie } from "@/lib/auth";
+import { isAdminEmail, setSessionCookie, setCustomerSessionCookie, comparePassword } from "@/lib/auth";
+import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 
 export async function POST(req: Request) {
   try {
@@ -15,6 +16,26 @@ export async function POST(req: Request) {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
+      if (isAdminEmail(email)) {
+        const adminClient = getSupabaseAdmin();
+        const { data: admin } = await adminClient
+          .from("admin_users")
+          .select("password_hash")
+          .eq("email", email)
+          .single();
+
+        if (admin?.password_hash) {
+          const valid = await comparePassword(password, admin.password_hash);
+          if (valid) {
+            await setSessionCookie(email);
+            await setCustomerSessionCookie({ email, name: admin.name ?? email });
+            return NextResponse.json({
+              customer: { email, name: admin.name ?? email, isAdmin: true },
+            });
+          }
+        }
+      }
+
       if (error.code === "email_not_confirmed") {
         return NextResponse.json(
           { error: "Please confirm your email before signing in. Check your inbox.", code: "email_not_confirmed" },
@@ -37,6 +58,7 @@ export async function POST(req: Request) {
         email: data.user.email,
         name: data.user.user_metadata?.name ?? data.user.email,
         picture: data.user.user_metadata?.picture,
+        isAdmin: isAdminEmail(email),
       },
     });
   } catch {
