@@ -147,13 +147,26 @@ INSERT INTO admin_users (email, name, role) VALUES
   ('rakhiglam200@gmail.com', 'Admin', 'super_admin')
 ON CONFLICT (email) DO NOTHING;
 
--- Row Level Security
+-- Row Level Security (safe to re-run)
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE collections ENABLE ROW LEVEL SECURITY;
 ALTER TABLE customers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE admin_users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE field_options ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies before recreating
+DROP POLICY IF EXISTS "Products are viewable by everyone" ON products;
+DROP POLICY IF EXISTS "Collections are viewable by everyone" ON collections;
+DROP POLICY IF EXISTS "Admins can manage products" ON products;
+DROP POLICY IF EXISTS "Admins can manage collections" ON collections;
+DROP POLICY IF EXISTS "Admins can manage customers" ON customers;
+DROP POLICY IF EXISTS "Admins can manage orders" ON orders;
+DROP POLICY IF EXISTS "Admins can manage admin_users" ON admin_users;
+DROP POLICY IF EXISTS "Admins can manage field_options" ON field_options;
+DROP POLICY IF EXISTS "Customers can view own orders" ON orders;
+DROP POLICY IF EXISTS "Customers can create own data" ON customers;
+DROP POLICY IF EXISTS "Customers can update own data" ON customers;
 
 -- Public read policies
 CREATE POLICY "Products are viewable by everyone" ON products FOR SELECT USING (true);

@@ -23,7 +23,15 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (existing?.password_hash) {
-      return NextResponse.json({ error: "Account already registered. Please login." }, { status: 409 });
+      const passwordHash = await hashPassword(password);
+      await supabase
+        .from("admin_users")
+        .update({ password_hash: passwordHash })
+        .eq("id", existing.id);
+
+      const token = await signToken({ email });
+      await setSessionCookie(token);
+      return NextResponse.json({ success: true, email, message: "Password updated successfully" });
     }
 
     const passwordHash = await hashPassword(password);
