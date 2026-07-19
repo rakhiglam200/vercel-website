@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import ImageListEditor from "@/app/components/ImageListEditor";
 
 const CATEGORY_OPTIONS = [
   "Newly Launched", "Necklaces", "Rings", "Bracelets", "Earrings",
@@ -187,16 +188,10 @@ export default function NewProductPage() {
           />
         </div>
 
-        <div>
-          <label className="block text-xs font-medium text-[var(--color-text-muted)] mb-1">Image URLs (one per line)</label>
-          <textarea
-            value={form.images}
-            onChange={(e) => setForm({ ...form, images: e.target.value })}
-            rows={2}
-            placeholder={"/images/products/my-product.jpg"}
-            className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm outline-none focus:border-[var(--color-navy)] resize-none font-mono"
-          />
-        </div>
+        <ImageListEditor
+          images={form.images}
+          onChange={(value) => setForm({ ...form, images: value })}
+        />
 
         <label className="flex items-center gap-2 text-sm text-[var(--color-text-light)] cursor-pointer">
           <input

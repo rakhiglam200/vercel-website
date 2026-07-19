@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import ProductCard from "@/app/components/ProductCard";
 import AdminImageControls from "@/app/components/AdminImageControls";
 import { useCart } from "@/app/context/CartContext";
 import { useAdminUI } from "@/app/context/AdminUIContext";
+import { useToast } from "@/app/context/ToastContext";
 import { getProductBySlug, products } from "@/data/products";
 
 export default function ProductPage() {
@@ -16,6 +16,7 @@ export default function ProductPage() {
   const router = useRouter();
   const { addItem } = useCart();
   const { editMode } = useAdminUI();
+  const { showToast } = useToast();
   const product = getProductBySlug(params.handle as string);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -26,6 +27,7 @@ export default function ProductPage() {
   const [titleValue, setTitleValue] = useState("");
   const [descValue, setDescValue] = useState("");
   const [priceValue, setPriceValue] = useState("");
+  const [addImageBusy, setAddImageBusy] = useState(false);
   const images = productImages.length > 0 ? productImages : (product?.images ?? []);
 
   if (!product) {
@@ -50,6 +52,38 @@ export default function ProductPage() {
   const related = products
     .filter((p) => p.collection === product.collection && p.id !== product.id)
     .slice(0, 4);
+
+  const handleAddImage = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      setAddImageBusy(true);
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        const res = await fetch("/api/admin/images/upload", { method: "POST", body: formData });
+        if (!res.ok) throw new Error("Upload failed");
+        const data = await res.json();
+        const currentImages = [...images, data.url];
+        setProductImages(currentImages);
+
+        await fetch(`/api/products/${product.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ images: currentImages }),
+        });
+        showToast("success", "Image added");
+      } catch {
+        showToast("error", "Failed to upload image");
+      } finally {
+        setAddImageBusy(false);
+      }
+    };
+    input.click();
+  };
 
   return (
     <>
@@ -78,7 +112,16 @@ export default function ProductPage() {
                 alt={product.alt}
                 className="w-full h-full object-cover"
               />
-              <AdminImageControls src={images[selectedImage]} productId={product.id} onUpdate={(url) => setProductImages((prev) => { const next = [...(prev.length ? prev : product.images)]; next[selectedImage] = url; return next; })} />
+              <AdminImageControls
+                src={images[selectedImage]}
+                productId={product.id}
+                images={images}
+                imageIndex={selectedImage}
+                onUpdate={(newImages) => {
+                  setProductImages(newImages);
+                  showToast("success", "Image updated");
+                }}
+              />
               {product.badge && (
                 <span className="absolute top-4 left-4 bg-[var(--color-navy)] text-white px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider">
                   {product.badge}
@@ -86,7 +129,7 @@ export default function ProductPage() {
               )}
             </div>
             {images.length > 1 && (
-              <div className="flex gap-3">
+              <div className="flex gap-3 flex-wrap">
                 {images.map((img, i) => (
                   <button
                     key={i}
@@ -99,7 +142,33 @@ export default function ProductPage() {
                     <img src={img} alt="" className="w-full h-full object-cover" />
                   </button>
                 ))}
+                {editMode && (
+                  <button
+                    onClick={handleAddImage}
+                    disabled={addImageBusy}
+                    className="w-20 h-20 rounded-lg border-2 border-dashed border-[var(--color-border)] flex items-center justify-center cursor-pointer bg-transparent hover:border-[var(--color-navy)] transition-colors disabled:opacity-50"
+                  >
+                    {addImageBusy ? (
+                      <div className="w-5 h-5 border-2 border-[var(--color-navy)] border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <span className="text-2xl text-[var(--color-text-muted)]">+</span>
+                    )}
+                  </button>
+                )}
               </div>
+            )}
+            {editMode && images.length <= 1 && (
+              <button
+                onClick={handleAddImage}
+                disabled={addImageBusy}
+                className="mt-3 flex items-center gap-2 text-sm text-[var(--color-navy)] border border-[var(--color-border)] rounded-lg px-4 py-2 hover:bg-[var(--color-beige)] cursor-pointer bg-transparent disabled:opacity-50 transition-colors"
+              >
+                {addImageBusy ? (
+                  <div className="w-4 h-4 border-2 border-[var(--color-navy)] border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  "+ Add Image"
+                )}
+              </button>
             )}
           </div>
 
