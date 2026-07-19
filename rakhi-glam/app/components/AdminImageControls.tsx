@@ -6,7 +6,7 @@ import ImagePickerModal from "./ImagePickerModal";
 
 interface AdminImageControlsProps {
   src: string;
-  productId: string;
+  slug: string;
   images?: string[];
   imageIndex?: number;
   onUpdate?: (newImages: string[]) => void;
@@ -15,7 +15,7 @@ interface AdminImageControlsProps {
 
 export default function AdminImageControls({
   src,
-  productId,
+  slug,
   images,
   imageIndex = 0,
   onUpdate,
@@ -28,6 +28,15 @@ export default function AdminImageControls({
 
   if (!editMode) return null;
 
+  const patchImages = async (newImages: string[]) => {
+    const res = await fetch(`/api/products/by-slug/${slug}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ images: newImages }),
+    });
+    return res.ok;
+  };
+
   const handleSelect = async (fileOrUrl: File | string) => {
     let newUrl: string;
 
@@ -39,11 +48,9 @@ export default function AdminImageControls({
       try {
         const formData = new FormData();
         formData.append("file", fileOrUrl);
-
         const res = await fetch("/api/admin/images/upload", { method: "POST", body: formData });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Upload failed");
-
         newUrl = data.url;
       } catch {
         alert("Failed to upload image");
@@ -52,24 +59,14 @@ export default function AdminImageControls({
       }
     }
 
-    try {
-      const currentImages = images && images.length > 0 ? [...images] : [src];
-      const idx = imageIndex < currentImages.length ? imageIndex : 0;
-      currentImages[idx] = newUrl;
+    const currentImages = images && images.length > 0 ? [...images] : [src];
+    const idx = imageIndex < currentImages.length ? imageIndex : 0;
+    currentImages[idx] = newUrl;
 
-      const patchRes = await fetch(`/api/products/${productId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ images: currentImages }),
-      });
-      if (!patchRes.ok) console.warn("Failed to update product image in database");
-    } catch {
-      console.warn("Failed to update product image in database");
-    }
-
+    await patchImages(currentImages);
     setUploading(false);
     setUploadProgress("");
-    onUpdate?.(images && images.length > 0 ? (() => { const n = [...images]; n[imageIndex < n.length ? imageIndex : 0] = newUrl; return n; })() : [newUrl]);
+    onUpdate?.(currentImages);
     setModalOpen(false);
   };
 
@@ -107,7 +104,6 @@ export default function AdminImageControls({
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                const updatedImages = [...images, ""];
                 const input = document.createElement("input");
                 input.type = "file";
                 input.accept = "image/*";
@@ -122,16 +118,9 @@ export default function AdminImageControls({
                     const res = await fetch("/api/admin/images/upload", { method: "POST", body: formData });
                     const data = await res.json();
                     if (!res.ok) throw new Error(data.error || "Upload failed");
-                    updatedImages[updatedImages.length - 1] = data.url;
-
-                    const patchRes = await fetch(`/api/products/${productId}`, {
-                      method: "PATCH",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ images: updatedImages }),
-                    });
-                    if (patchRes.ok) {
-                      onUpdate?.(updatedImages);
-                    }
+                    const updatedImages = [...images, data.url];
+                    await patchImages(updatedImages);
+                    onUpdate?.(updatedImages);
                   } catch {
                     alert("Failed to upload image");
                   } finally {

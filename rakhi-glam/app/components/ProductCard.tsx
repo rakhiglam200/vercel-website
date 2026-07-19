@@ -44,7 +44,7 @@ export default function ProductCard({
           <Image src={src} alt={alt} fill className="object-cover transition-transform duration-600 group-hover:scale-108" />
           <AdminImageControls
             src={src}
-            productId={id}
+            slug={slug}
             images={images}
             imageIndex={imageIndex}
             onUpdate={onImagesUpdate}
