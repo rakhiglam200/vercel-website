@@ -41,9 +41,9 @@ export default function AdminImageControls({
         formData.append("file", fileOrUrl);
 
         const res = await fetch("/api/admin/images/upload", { method: "POST", body: formData });
-        if (!res.ok) throw new Error("Upload failed");
-
         const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Upload failed");
+
         newUrl = data.url;
       } catch {
         alert("Failed to upload image");
@@ -120,8 +120,8 @@ export default function AdminImageControls({
                     const formData = new FormData();
                     formData.append("file", file);
                     const res = await fetch("/api/admin/images/upload", { method: "POST", body: formData });
-                    if (!res.ok) throw new Error("Upload failed");
                     const data = await res.json();
+                    if (!res.ok) throw new Error(data.error || "Upload failed");
                     updatedImages[updatedImages.length - 1] = data.url;
 
                     const patchRes = await fetch(`/api/products/${productId}`, {

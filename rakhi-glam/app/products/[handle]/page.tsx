@@ -65,9 +65,9 @@ export default function ProductPage() {
         const formData = new FormData();
         formData.append("file", file);
         const res = await fetch("/api/admin/images/upload", { method: "POST", body: formData });
-        if (!res.ok) throw new Error("Upload failed");
-        const data = await res.json();
-        const currentImages = [...images, data.url];
+        const uploadData = await res.json();
+        if (!res.ok) throw new Error(uploadData.error || "Upload failed");
+        const currentImages = [...images, uploadData.url];
         setProductImages(currentImages);
 
         await fetch(`/api/products/${product.id}`, {
@@ -76,8 +76,8 @@ export default function ProductPage() {
           body: JSON.stringify({ images: currentImages }),
         });
         showToast("success", "Image added");
-      } catch {
-        showToast("error", "Failed to upload image");
+      } catch (err) {
+        showToast("error", err instanceof Error ? err.message : "Failed to upload image");
       } finally {
         setAddImageBusy(false);
       }
@@ -129,24 +129,26 @@ export default function ProductPage() {
               )}
             </div>
             {images.length > 1 && (
-              <div className="flex gap-3 flex-wrap">
+              <div className="thumb-strip flex gap-2 overflow-x-auto pb-2">
                 {images.map((img, i) => (
                   <button
                     key={i}
                     onClick={() => setSelectedImage(i)}
-                    className={`w-20 h-20 rounded-lg overflow-hidden border-2 cursor-pointer ${
-                      selectedImage === i ? "border-[var(--color-navy)]" : "border-transparent"
+                    className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all cursor-pointer bg-[var(--color-beige)] ${
+                      selectedImage === i
+                        ? "border-[var(--color-navy)] ring-1 ring-[var(--color-navy)]"
+                        : "border-[var(--color-border)] hover:border-[var(--color-navy)] opacity-80 hover:opacity-100"
                     }`}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={img} alt="" className="w-full h-full object-cover" />
+                    <img src={img} alt={`${product.alt} ${i + 1}`} className="w-full h-full object-cover" />
                   </button>
                 ))}
                 {editMode && (
                   <button
                     onClick={handleAddImage}
                     disabled={addImageBusy}
-                    className="w-20 h-20 rounded-lg border-2 border-dashed border-[var(--color-border)] flex items-center justify-center cursor-pointer bg-transparent hover:border-[var(--color-navy)] transition-colors disabled:opacity-50"
+                    className="flex-shrink-0 w-16 h-16 rounded-lg border-2 border-dashed border-[var(--color-border)] flex items-center justify-center cursor-pointer bg-transparent hover:border-[var(--color-navy)] transition-colors disabled:opacity-50"
                   >
                     {addImageBusy ? (
                       <div className="w-5 h-5 border-2 border-[var(--color-navy)] border-t-transparent rounded-full animate-spin" />
@@ -158,17 +160,28 @@ export default function ProductPage() {
               </div>
             )}
             {editMode && images.length <= 1 && (
-              <button
-                onClick={handleAddImage}
-                disabled={addImageBusy}
-                className="mt-3 flex items-center gap-2 text-sm text-[var(--color-navy)] border border-[var(--color-border)] rounded-lg px-4 py-2 hover:bg-[var(--color-beige)] cursor-pointer bg-transparent disabled:opacity-50 transition-colors"
-              >
-                {addImageBusy ? (
-                  <div className="w-4 h-4 border-2 border-[var(--color-navy)] border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  "+ Add Image"
+              <div className="thumb-strip flex gap-2 overflow-x-auto pb-2">
+                {images.length === 1 && (
+                  <button
+                    onClick={() => setSelectedImage(0)}
+                    className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 border-[var(--color-navy)] ring-1 ring-[var(--color-navy)] cursor-pointer bg-[var(--color-beige)]"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={images[0]} alt="" className="w-full h-full object-cover" />
+                  </button>
                 )}
-              </button>
+                <button
+                  onClick={handleAddImage}
+                  disabled={addImageBusy}
+                  className="flex-shrink-0 w-16 h-16 rounded-lg border-2 border-dashed border-[var(--color-border)] flex items-center justify-center cursor-pointer bg-transparent hover:border-[var(--color-navy)] transition-colors disabled:opacity-50"
+                >
+                  {addImageBusy ? (
+                    <div className="w-5 h-5 border-2 border-[var(--color-navy)] border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <span className="text-2xl text-[var(--color-text-muted)]">+</span>
+                  )}
+                </button>
+              </div>
             )}
           </div>
 

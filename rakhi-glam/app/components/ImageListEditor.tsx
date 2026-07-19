@@ -55,9 +55,9 @@ export default function ImageListEditor({ images, onChange, label = "Images" }: 
       formData.append("file", file);
 
       const res = await fetch("/api/admin/images/upload", { method: "POST", body: formData });
-      if (!res.ok) throw new Error("Upload failed");
-
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Upload failed");
+
       addImage(data.url);
       showToast("success", `"${file.name}" uploaded`);
     } catch (err) {
