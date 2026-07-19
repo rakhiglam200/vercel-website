@@ -1,12 +1,30 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import ProductCard from "@/app/components/ProductCard";
-import { products, COLLECTIONS } from "@/data/products";
+import { COLLECTIONS } from "@/data/products";
+
+interface Product {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  price: number;
+  original_price?: number;
+  badge?: string;
+  category: string;
+  collection_slug: string;
+  in_stock: boolean;
+  images: string[];
+  alt: string;
+  material?: string;
+  weight?: number;
+  features?: string[];
+}
 
 function CollectionsContent() {
   const searchParams = useSearchParams();
@@ -14,11 +32,21 @@ function CollectionsContent() {
   const initialCollection = searchParams.get("collection") || "";
   const [searchQuery, setSearchQuery] = useState(initialQ);
   const [selectedCollection, setSelectedCollection] = useState(initialCollection);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/products", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((data) => setAllProducts(data.products || []))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
 
   const filtered = useMemo(() => {
-    let result = products;
+    let result = allProducts;
     if (selectedCollection) {
-      result = result.filter((p) => p.collection === selectedCollection);
+      result = result.filter((p) => p.collection_slug === selectedCollection);
     }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
@@ -30,13 +58,12 @@ function CollectionsContent() {
       );
     }
     return result;
-  }, [searchQuery, selectedCollection]);
+  }, [searchQuery, selectedCollection, allProducts]);
 
   return (
     <>
       <Header />
 
-      {/* Page Header */}
       <div className="bg-[var(--color-navy)] py-16">
         <div className="max-w-[1440px] mx-auto px-10 max-md:px-5 text-center">
           <h1 className="font-heading text-4xl md:text-5xl font-bold text-white mb-3">
@@ -48,9 +75,7 @@ function CollectionsContent() {
         </div>
       </div>
 
-      {/* Filters + Products */}
       <div className="max-w-[1440px] mx-auto px-10 py-10 max-md:px-5">
-        {/* Filter Bar */}
         <div className="flex flex-wrap items-center gap-3 mb-8">
           <button
             onClick={() => { setSelectedCollection(""); setSearchQuery(""); }}
@@ -77,7 +102,6 @@ function CollectionsContent() {
           ))}
         </div>
 
-        {/* Search */}
         <div className="mb-8">
           <input
             type="text"
@@ -88,8 +112,11 @@ function CollectionsContent() {
           />
         </div>
 
-        {/* Product Grid */}
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div className="text-center py-20">
+            <p className="text-[var(--color-text-muted)] text-lg">Loading products...</p>
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-[var(--color-text-muted)] text-lg">No products found</p>
             <button
@@ -106,12 +133,12 @@ function CollectionsContent() {
                 key={p.id}
                 id={p.id}
                 slug={p.slug}
-                src={p.images[0]}
-                alt={p.alt}
+                src={p.images?.[0] || `/images/products/${p.slug}.jpg`}
+                alt={p.alt || p.title}
                 title={p.title}
                 desc={p.description}
                 price={p.price}
-                originalPrice={p.originalPrice}
+                originalPrice={p.original_price}
                 badge={p.badge}
               />
             ))}
@@ -119,7 +146,7 @@ function CollectionsContent() {
         )}
 
         <p className="text-center text-sm text-[var(--color-text-muted)] mt-8">
-          Showing {filtered.length} of {products.length} products
+          Showing {filtered.length} of {allProducts.length} products
         </p>
       </div>
 

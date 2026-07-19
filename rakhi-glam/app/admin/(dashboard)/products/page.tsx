@@ -20,6 +20,7 @@ interface Product {
   material?: string;
   weight?: number;
   features?: string[];
+  source?: "db" | "hardcoded";
 }
 
 export default function AdminProductsPage() {
@@ -114,7 +115,12 @@ export default function AdminProductsPage() {
                         />
                       </div>
                       <div>
-                        <p className="font-medium text-[var(--color-navy)]">{p.title}</p>
+                        <Link
+                          href={`/products/${p.slug}`}
+                          className="font-medium text-[var(--color-navy)] no-underline hover:underline"
+                        >
+                          {p.title}
+                        </Link>
                         <p className="text-xs text-[var(--color-text-muted)]">{p.slug}</p>
                       </div>
                     </div>

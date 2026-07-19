@@ -2,17 +2,48 @@
 
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import ProductCard from "@/app/components/ProductCard";
-import { getProductsByCollection, COLLECTIONS } from "@/data/products";
+import { COLLECTIONS } from "@/data/products";
+
+interface Product {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  price: number;
+  original_price?: number;
+  badge?: string;
+  category: string;
+  collection_slug: string;
+  in_stock: boolean;
+  images: string[];
+  alt: string;
+  material?: string;
+  weight?: number;
+  features?: string[];
+}
 
 export default function CollectionDetailPage() {
   const params = useParams();
   const router = useRouter();
   const slug = params.slug as string;
   const collection = COLLECTIONS[slug];
-  const items = getProductsByCollection(slug);
+  const [items, setItems] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/products", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((data) => {
+        const all = data.products || [];
+        setItems(all.filter((p: Product) => p.collection_slug === slug));
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [slug]);
 
   if (!collection) {
     return (
@@ -37,7 +68,6 @@ export default function CollectionDetailPage() {
     <>
       <Header />
 
-      {/* Collection Header */}
       <div className="bg-[var(--color-navy)] py-16">
         <div className="max-w-[1440px] mx-auto px-10 max-md:px-5 text-center">
           <h1 className="font-heading text-4xl md:text-5xl font-bold text-white mb-3">{collection.label}</h1>
@@ -45,9 +75,12 @@ export default function CollectionDetailPage() {
         </div>
       </div>
 
-      {/* Products */}
       <div className="max-w-[1440px] mx-auto px-10 py-10 max-md:px-5">
-        {items.length === 0 ? (
+        {loading ? (
+          <div className="text-center py-20">
+            <p className="text-[var(--color-text-muted)] text-lg">Loading products...</p>
+          </div>
+        ) : items.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-[var(--color-text-muted)] text-lg">No products in this collection yet</p>
             <button
@@ -64,12 +97,12 @@ export default function CollectionDetailPage() {
                 key={p.id}
                 id={p.id}
                 slug={p.slug}
-                src={p.images[0]}
-                alt={p.alt}
+                src={p.images?.[0] || `/images/products/${p.slug}.jpg`}
+                alt={p.alt || p.title}
                 title={p.title}
                 desc={p.description}
                 price={p.price}
-                originalPrice={p.originalPrice}
+                originalPrice={p.original_price}
                 badge={p.badge}
               />
             ))}
